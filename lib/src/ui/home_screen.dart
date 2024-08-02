@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:linked_scroll_controller/linked_scroll_controller.dart';
 import 'package:scroll_2d/src/data/models/option_contract_model.dart';
+import 'package:intl/intl.dart';
 import 'package:scroll_2d/src/utils/color_palette.dart';
 import 'package:scroll_2d/src/utils/dimensions.dart';
 import 'package:two_dimensional_scrollables/two_dimensional_scrollables.dart';
@@ -158,7 +159,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final vpW = getViewportWidth(context);
     final vpH = getViewportHeight(context);
     const ScrollPhysics scrollPhysics = AlwaysScrollableScrollPhysics();
-    const SpanExtent columnExtent = FixedSpanExtent(70);
+    const SpanExtent columnExtent = FixedSpanExtent(75);
     const SpanExtent rowExtent = FixedSpanExtent(50);
 
     return Scaffold(
@@ -302,20 +303,23 @@ class _HomeScreenState extends State<HomeScreen> {
       required OptionContractModel currentCellElement}) {
     bool isMiddleColumn = (!isLeftTable && currentCellTableVicinity.column < 2);
     final textStyle = Theme.of(context).textTheme.labelSmall;
+
+    NumberFormat nf = NumberFormat("###.00", "en-IN");
+    NumberFormat nfCompact = NumberFormat.compact(locale: "en");
     Widget contentWidget = Container();
     if (!isMiddleColumn) {
       if (currentCellTableVicinity.column == 0 ||
-          currentCellTableVicinity.column == 2) {
+          (!isLeftTable && currentCellTableVicinity.column == 2)) {
         // LTP
         final ltp = isLeftTable
             ? currentCellElement.ce.lastPrice
             : currentCellElement.pe.lastPrice;
         contentWidget = Text(
-          ltp.toString(),
+          nf.format(ltp),
           style: textStyle,
         );
       } else if (currentCellTableVicinity.column == 1 ||
-          currentCellTableVicinity.column == 3) {
+          (!isLeftTable && currentCellTableVicinity.column == 3)) {
         // Chng Chang%
         final chng = isLeftTable
             ? currentCellElement.ce.change
@@ -323,38 +327,42 @@ class _HomeScreenState extends State<HomeScreen> {
         final pChng = isLeftTable
             ? currentCellElement.ce.pChange
             : currentCellElement.pe.pChange;
-        contentWidget = Column(children: [
-          Text(chng.toString(), style: textStyle),
-          Text(pChng.toString(), style: textStyle)
+        contentWidget =
+            Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+          Text(nf.format(chng),
+              style: textStyle?.copyWith(
+                  color: chng > 0 ? ColorPalette.green : ColorPalette.red)),
+          Text("${nf.format(pChng)}%",
+              style: textStyle?.copyWith(
+                  color: chng > 0 ? ColorPalette.green : ColorPalette.red))
         ]);
       } else if (currentCellTableVicinity.column == 2 ||
-          currentCellTableVicinity.column == 4) {
+          (!isLeftTable && currentCellTableVicinity.column == 4)) {
         // OI
         final oi = isLeftTable
             ? currentCellElement.ce.openInterest
             : currentCellElement.pe.openInterest;
         contentWidget = Text(
-          oi.toString(),
+          nfCompact.format(oi),
           style: textStyle,
         );
       } else if (currentCellTableVicinity.column == 3 ||
-          currentCellTableVicinity.column == 5) {
+          (!isLeftTable && currentCellTableVicinity.column == 5)) {
         // OI Chng%
         final pchngOI = isLeftTable
             ? currentCellElement.ce.pchangeinOpenInterest
             : currentCellElement.pe.pchangeinOpenInterest;
-        contentWidget = Text(
-          pchngOI.toString(),
-          style: textStyle,
-        );
+        contentWidget = Text("${nf.format(pchngOI)}%",
+            style: textStyle?.copyWith(
+                color: pchngOI > 0 ? ColorPalette.green : ColorPalette.red));
       } else if (currentCellTableVicinity.column == 4 ||
-          currentCellTableVicinity.column == 6) {
+          (!isLeftTable && currentCellTableVicinity.column == 6)) {
         // Volume
         final volume = isLeftTable
             ? currentCellElement.ce.totalTradedVolume
             : currentCellElement.pe.totalTradedVolume;
         contentWidget = Text(
-          volume.toString(),
+          nfCompact.format(volume),
           style: textStyle,
         );
       }
