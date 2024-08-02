@@ -6,7 +6,7 @@ class ColorPalette {
   static const Color blue = Color(0xFF4044EE);
   static final Color blueShade100 = Colors.blueAccent.shade100;
 
-  static const Color green = Colors.green;
+  static final Color green = Colors.green.shade600;
   static const Color red = Colors.red;
 
   static const Color lightGrey = Color(0xFFE2E4E7);

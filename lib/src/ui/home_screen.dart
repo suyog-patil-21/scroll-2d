@@ -2,115 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:linked_scroll_controller/linked_scroll_controller.dart';
 import 'package:scroll_2d/src/data/models/option_contract_model.dart';
 import 'package:intl/intl.dart';
+import 'package:scroll_2d/src/ui/raw_data.dart';
 import 'package:scroll_2d/src/utils/color_palette.dart';
 import 'package:scroll_2d/src/utils/dimensions.dart';
 import 'package:two_dimensional_scrollables/two_dimensional_scrollables.dart';
 
+// Table Header Data
 const List<String> _fixedTableHeader = ["Strike", "IV"];
-const List<String> _moveabletableHeading = [
+const List<String> _moveableTableHeading = [
   "LTP",
   "Chng Chng%",
   "OI",
   "OI Chng%",
   "Volume",
 ];
-const rightTable = [..._fixedTableHeader, ..._moveabletableHeading];
-const double underlyingPrice = 24750;
-final List<OptionContractModel> optionChainList = [
-  OptionContractModel(
-      strikePrice: 24700,
-      expiryDate: "08-Aug-2024",
-      pe: Pe(
-        strikePrice: 24700,
-        expiryDate: "08-Aug-2024",
-        underlying: "NIFTY",
-        identifier: "OPTIDXNIFTY08-08-2024PE24700.00",
-        openInterest: 106431,
-        changeinOpenInterest: 49022,
-        pchangeinOpenInterest: 85.39079238446934,
-        totalTradedVolume: 759218,
-        impliedVolatility: 14.64,
-        lastPrice: 130.85,
-        change: 75.1,
-        pChange: 134.7085201793722,
-      ),
-      ce: Ce(
-        strikePrice: 24700,
-        expiryDate: "08-Aug-2024",
-        underlying: "NIFTY",
-        identifier: "OPTIDXNIFTY08-08-2024CE24700.00",
-        openInterest: 70105,
-        changeinOpenInterest: 57419,
-        pchangeinOpenInterest: 452.61705817436547,
-        totalTradedVolume: 340126,
-        impliedVolatility: 10.15,
-        lastPrice: 187.65,
-        change: -159.54999999999998,
-        pChange: -45.95334101382488,
-      )),
-  OptionContractModel(
-    expiryDate: "08-Aug-2024",
-    strikePrice: 24750,
-    pe: Pe(
-      strikePrice: 24750,
-      expiryDate: "08-Aug-2024",
-      underlying: "NIFTY",
-      identifier: "OPTIDXNIFTY08-08-2024PE24750.00",
-      openInterest: 60946,
-      changeinOpenInterest: 26740,
-      pchangeinOpenInterest: 78.17341986785944,
-      totalTradedVolume: 520940,
-      impliedVolatility: 14.72,
-      lastPrice: 154.2,
-      change: 88.44999999999999,
-      pChange: 134.52471482889732,
-    ),
-    ce: Ce(
-        strikePrice: 24750,
-        expiryDate: "08-Aug-2024",
-        underlying: "NIFTY",
-        identifier: "OPTIDXNIFTY08-08-2024CE24750.00",
-        openInterest: 69227,
-        changeinOpenInterest: 65810,
-        pchangeinOpenInterest: 1925.958443078724,
-        totalTradedVolume: 362214,
-        impliedVolatility: 10.31,
-        lastPrice: 159.85,
-        change: -148.75000000000003,
-        pChange: -48.20155541153597),
-  ),
-  OptionContractModel(
-      strikePrice: 24800,
-      expiryDate: "08-Aug-2024",
-      ce: Ce(
-        strikePrice: 24800,
-        expiryDate: "08-Aug-2024",
-        underlying: "NIFTY",
-        identifier: "OPTIDXNIFTY08-08-2024CE24800.00",
-        openInterest: 205443,
-        changeinOpenInterest: 175358,
-        pchangeinOpenInterest: 582.875186970251,
-        totalTradedVolume: 1008435,
-        impliedVolatility: 10.39,
-        lastPrice: 134.05,
-        change: -138.5,
-        pChange: -50.81636396991378,
-      ),
-      pe: Pe(
-        strikePrice: 24800,
-        expiryDate: "08-Aug-2024",
-        underlying: "NIFTY",
-        identifier: "OPTIDXNIFTY08-08-2024PE24800.00",
-        openInterest: 123336,
-        changeinOpenInterest: 43836,
-        pchangeinOpenInterest: 55.13962264150943,
-        totalTradedVolume: 1042730,
-        impliedVolatility: 14.77,
-        lastPrice: 179,
-        change: 99.45,
-        pChange: 125.01571338780641,
-      )),
-];
+const rightSideTableHeader = [..._fixedTableHeader, ..._moveableTableHeading];
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -163,7 +69,7 @@ class _HomeScreenState extends State<HomeScreen> {
     const SpanExtent rowExtent = FixedSpanExtent(50);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('2d Scroll')),
+      appBar: AppBar(title: const Text('2D Scroll')),
       body: Padding(
           padding: EdgeInsets.symmetric(
               vertical: vpH * 0.01, horizontal: vpW * 0.02),
@@ -202,7 +108,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           child: TableView.builder(
                             pinnedRowCount: 1,
                             rowCount: optionChainList.length,
-                            columnCount: _moveabletableHeading.length,
+                            columnCount: _moveableTableHeading.length,
                             horizontalDetails: ScrollableDetails.horizontal(
                                 physics: scrollPhysics,
                                 controller: _leftHorizontalScrollController,
@@ -230,7 +136,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                       isLeftTable: true,
                                       rowElement: optionChainList[vicinity.row],
                                       context: context,
-                                      colElement: _moveabletableHeading[
+                                      colElement: _moveableTableHeading[
                                           vicinity.column],
                                       currentCellTableVicinity: vicinity),
                                 );
@@ -249,7 +155,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           child: TableView.builder(
                             rowCount: optionChainList.length,
                             pinnedRowCount: 1,
-                            columnCount: rightTable.length,
+                            columnCount: rightSideTableHeader.length,
                             pinnedColumnCount: 2,
                             horizontalDetails: ScrollableDetails.horizontal(
                                 physics: scrollPhysics,
@@ -277,7 +183,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                       isLeftTable: false,
                                       rowElement: optionChainList[vicinity.row],
                                       context: context,
-                                      colElement: rightTable[vicinity.column],
+                                      colElement:
+                                          rightSideTableHeader[vicinity.column],
                                       currentCellTableVicinity: vicinity),
                                 );
                               }
@@ -333,9 +240,7 @@ class _HomeScreenState extends State<HomeScreen> {
             : currentCellElement.pe.pChange;
         contentWidget =
             Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-          Text(nf.format(chng),
-              style: textStyle?.copyWith(
-                  color: chng > 0 ? ColorPalette.green : ColorPalette.red)),
+          Text(nf.format(chng), style: textStyle),
           Text("${nf.format(pChng)}%",
               style: textStyle?.copyWith(
                   color: chng > 0 ? ColorPalette.green : ColorPalette.red))
