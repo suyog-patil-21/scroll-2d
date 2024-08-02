@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 
 class ColorPalette {
   static const Color orange = Colors.orangeAccent;
+  static final Color orangeShade100 = Colors.orangeAccent.shade100;
   static const Color blue = Colors.blueAccent;
+  static final Color blueShade100 = Colors.blueAccent.shade100;
 
   static const Color green = Colors.green;
   static const Color red = Colors.red;

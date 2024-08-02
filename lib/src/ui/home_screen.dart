@@ -226,6 +226,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               if (vicinity.row == 0) {
                                 return TableViewCell(
                                   child: displayTableHeaderCellContent(
+                                      currentUnderlyingValue: underlyingPrice,
                                       isLeftTable: true,
                                       rowElement: optionChainList[vicinity.row],
                                       context: context,
@@ -236,6 +237,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               }
                               return TableViewCell(
                                   child: displayTableCellContent(
+                                      currentUnderlyingValue: underlyingPrice,
                                       isLeftTable: true,
                                       context: context,
                                       element: optionChainList[vicinity.row],
@@ -271,6 +273,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               if (vicinity.row == 0) {
                                 return TableViewCell(
                                   child: displayTableHeaderCellContent(
+                                      currentUnderlyingValue: underlyingPrice,
                                       isLeftTable: false,
                                       rowElement: optionChainList[vicinity.row],
                                       context: context,
@@ -280,6 +283,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               }
                               return TableViewCell(
                                 child: displayTableCellContent(
+                                    currentUnderlyingValue: underlyingPrice,
                                     isLeftTable: false,
                                     context: context,
                                     element: optionChainList[vicinity.row],
@@ -392,7 +396,10 @@ class _HomeScreenState extends State<HomeScreen> {
     required BuildContext context,
     required OptionContractModel element,
     required TableVicinity currentCellTableVicinity,
+    required double currentUnderlyingValue,
   }) {
+    bool isCurrentElementGreaterThanUnderlying =
+        currentUnderlyingValue < element.strikePrice;
     bool isMiddleColumn = (!isLeftTable && currentCellTableVicinity.column < 2);
     final contentWidget = getCellContentByTheVicinity(
         isLeftTable: isLeftTable,
@@ -401,7 +408,15 @@ class _HomeScreenState extends State<HomeScreen> {
         currentCellTableVicinity: currentCellTableVicinity);
     return Container(
       decoration: BoxDecoration(
-        color: isMiddleColumn ? ColorPalette.lightGrey3 : null,
+        color: isLeftTable
+            ? !isCurrentElementGreaterThanUnderlying
+                ? ColorPalette.orangeShade100
+                : null
+            : isMiddleColumn
+                ? ColorPalette.lightGrey3
+                : isCurrentElementGreaterThanUnderlying
+                    ? ColorPalette.blueShade100
+                    : null,
         border: const BorderDirectional(
           end: BorderSide(color: ColorPalette.lightGrey),
         ),
@@ -418,6 +433,7 @@ class _HomeScreenState extends State<HomeScreen> {
     required var colElement,
     required TableVicinity currentCellTableVicinity,
     required OptionContractModel rowElement,
+    required double currentUnderlyingValue,
   }) {
     return Column(
       children: [
@@ -447,6 +463,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 border: BorderDirectional(
                     top: BorderSide(color: ColorPalette.lightGrey))),
             child: displayTableCellContent(
+                currentUnderlyingValue: underlyingPrice,
                 isLeftTable: isLeftTable,
                 context: context,
                 element: rowElement,
